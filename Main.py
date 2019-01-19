@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# author: hzy(306679711@qq.com)
+
 import sys
 import aiohttp
 import asyncio
