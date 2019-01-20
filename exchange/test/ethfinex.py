@@ -10,14 +10,14 @@ import sys
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('USE: python bitfinex.py btc_usd,eth_usd')
+        print('USE: python ethfinex.py btc_usd,eth_usd')
 
     symbols = sys.argv[1] if len(sys.argv) > 1 else "btc_usd"
     symbols = symbols.split(",")
     while True:
         try:
             ws = create_connection(
-                "wss://api.bitfinex.com/ws/2",
+                "wss://api.ethfinex.com/ws/2/",
                 http_proxy_host="127.0.0.1",
                 http_proxy_port=1087)
             break
@@ -36,8 +36,6 @@ if __name__ == '__main__':
     # })
 
     # ws.send(tradeStr)
-    # ticker
-    #
 
     sub_data_list = [
         json.dumps({
@@ -52,9 +50,10 @@ if __name__ == '__main__':
     for sub in sub_data_list:
         ws.send(sub)
 
+    ping = '{"event":"ping", "cid": 1234}'
     symbols_Events = []
-    symbols_Data_List = {}
-    while True:
+
+    while (True):
         res = ws.recv()
         resJson = json.loads(res)
         if isinstance(
@@ -73,19 +72,20 @@ if __name__ == '__main__':
 
             # ping pong
             if isinstance(resJson[1], str) and resJson[1] == "hb":
-                pingStr = '{"event":"ping", "cid": ' + str(chanId) + '}'
-                print(pingStr)
-                ws.send(pingStr)
+                ws.send(ping)
 
-            if isinstance(resJson[1],
-                          list) and len(resJson[1]) > 0 and isinstance(
-                              resJson[1][0], list):
+            if isinstance(resJson[1], list) and isinstance(
+                    resJson[1][0], list):
                 continue
-            elif isinstance(resJson[1], list) and len(resJson[1]) > 0:
-
-                keySymbol = resJson[0]
-                symbols_Data_List[keySymbol] = symbols_Data_List[
-                    keySymbol] + 1 if keySymbol in symbols_Data_List else 1
-                print(len(symbols_Data_List), symbols_Data_List)
 
         print(resJson)
+
+        # res = gzip.decompress(compressData).decode('utf-8')
+
+        # print(res)
+
+        # if res[:7] == '{"ping"':
+        #     ts = res[8:21]
+        #     pong = '{"pong":' + ts + '}'
+        #     ws.send(pong)
+#
