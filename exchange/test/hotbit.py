@@ -45,25 +45,37 @@ if __name__ == '__main__':
         #         "id": int(time.time() * 1000000)
         #     }) for symbol in symbols
         # ]
-        sub_data_list = []
-        subId = 10000
-        for symbol in symbols:
-            subId += 1
-            subData = json.dumps({
-                "method":
-                "kline.subscribe",
-                "params": [symbol.replace("_", "").upper(), 60],
-                "id":
-                subId
-            })
-            sub_data_list.append(subData)
+        sub_data_list = [symbol.replace("_", "").upper() for symbol in symbols]
+        # subId = 10000
+        # for symbol in symbols:
+        #     subId += 1
+        #     subData = json.dumps({
+        #         "method":
+        #         "kline.subscribe",
+        #         "params": [symbol.replace("_", "").upper(), 60],
+        #         "id":
+        #         subId
+        #     })
+        #     sub_data_list.append(subData)
 
-        for sub in sub_data_list:
-            ws.send(sub)
+        # for sub in sub_data_list:
+        #     ws.send(sub)
 
         ping = json.dumps({"method": "server.ping", "params": [], "id": 100})
         timeStart = time.time()
+        symbolIndex = 0
         while True:
+            symbol = sub_data_list[symbolIndex]
+            klineQuery = json.dumps({
+                "method":
+                "kline.query",
+                "params":
+                [symbol, int(time.time()) - 60,
+                 int(time.time()), 60],
+                "id":
+                int(time.time())
+            })
+            ws.send(klineQuery)
             res = ws.recv()
 
             timeEnd = time.time()
@@ -71,6 +83,10 @@ if __name__ == '__main__':
                 timeStart = timeEnd
                 ws.send(ping)
             print(res)
+
+            symbolIndex += 1
+            if symbolIndex >= len(sub_data_list):
+                symbolIndex = 0
 
     except Exception as ex:
         print(ex)
