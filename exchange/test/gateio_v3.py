@@ -57,35 +57,5 @@ if __name__ == '__main__':
     while True:
         res = ws.recv()
         resJson = json.loads(res)
-        # if isinstance(
-        #         resJson, dict
-        # ) and "event" in resJson and resJson["event"] == "subscribed":
-        #     symbols_Events.append(resJson)
-        # if isinstance(resJson, list):
-        #     chanId = resJson[0]
-        #     chanEvent = None
-        #     for event in symbols_Events:
-        #         if event["chanId"] == chanId:
-        #             chanEvent = event
-        #             break
-        #     if chanEvent is not None:
-        #         resJson[0] = chanEvent["key"]
-
-        #     # ping pong
-        #     if isinstance(resJson[1], str) and resJson[1] == "hb":
-        #         pingStr = '{"event":"ping", "cid": ' + str(chanId) + '}'
-        #         print(pingStr)
-        #         ws.send(pingStr)
-
-        #     if isinstance(resJson[1],
-        #                   list) and len(resJson[1]) > 0 and isinstance(
-        #                       resJson[1][0], list):
-        #         continue
-        #     elif isinstance(resJson[1], list) and len(resJson[1]) > 0:
-
-        #         keySymbol = resJson[0]
-        #         symbols_Data_List[keySymbol] = symbols_Data_List[
-        #             keySymbol] + 1 if keySymbol in symbols_Data_List else 1
-        #         print(len(symbols_Data_List), symbols_Data_List)
 
         print(resJson)

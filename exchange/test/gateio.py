@@ -11,7 +11,10 @@ import sys
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('USE: python gateio.py btc_usd,eth_usd')
-
+    """
+    获取币对
+    https://data.gateio.io/api2/1/pairs
+    """
     symbols = sys.argv[1] if len(sys.argv) > 1 else "btc_usd"
     symbols = symbols.split(",")
     while True:
@@ -38,6 +41,7 @@ if __name__ == '__main__':
         }) for symbol in symbols
     ]
     for sub in sub_data_list:
+        print(sub)
         ws.send(sub)
 
     symbols_Events = []
