@@ -10,6 +10,8 @@ import json
 # import time
 import hashlib
 
+from installClass import installClass
+
 PROXY = "http://127.0.0.1:1087"
 URL = "wss://api.huobi.pro/ws"
 
@@ -128,9 +130,7 @@ async def connect_ws(session, url, sub_data, proxy):
             return
 
 
-if __name__ == '__main__':
-    print(sys.argv)
-
+def main_huobipro():
     symbols_list = [
             '18C/BTC', '18C/ETH', 'AAC/BTC', 'AAC/ETH', 'ABT/BTC', 'ABT/ETH',
             'ACT/BTC', 'ACT/ETH', 'ACT/USDT', 'ADA/BTC', 'ADA/ETH', 'ADA/USDT',
@@ -220,3 +220,17 @@ if __name__ == '__main__':
     ]
     loop.run_until_complete(asyncio.wait(tasks))
     loop.close()
+
+
+if __name__ == '__main__':
+    # main_huobipro()
+    # install uninstall run statics
+    if len(sys.argv) < 4:
+        print('Usage:\n\
+        python main [dev|prod|local] [install|uninstall|run|statics] [all|huobipro|okex|binance] \n\n\
+    i.e python main local run all\n')
+        exit(0)
+    
+    myinstall = installClass()
+    myinstall.logger()
+    print(sys.argv)

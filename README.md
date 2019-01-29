@@ -3,4 +3,7 @@ test websockets of exchange(i.e    huobipro  binance  okex),     asyncio and aio
 
 data: ticker + kline(1min) + depth + trade
 
-framework: multithread + websockets + asyncio + redis + mq
+framework: multithread + websockets + asyncio + redis + rabbitmq
+
+author: 
+    hzy(306679711@qq.com)
