@@ -22,10 +22,13 @@ class settings(object):
         self._content = dict()
         if len(argv) >= 2:
             settingType = sys.argv[1]
+        else:
+            settingType = SettingEnum.LOCAL.value
+
         # print("settingType", settingType, SettingEnum.DEV.value)
-        if settingType == SettingEnum.PROD.value:
+        if settingType is SettingEnum.PROD.value:
             from .prod import redis, rabbitmq
-        elif settingType == SettingEnum.DEV.value:
+        elif settingType is SettingEnum.DEV.value:
             from .dev import redis, rabbitmq
         else:
             from .local import redis, rabbitmq
