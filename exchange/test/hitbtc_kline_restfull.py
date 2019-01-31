@@ -41,10 +41,7 @@ async def http_get_kline(session, url, symbol, proxy):
             curKlineTime = int(time.time())
             # print(lastKlineTime, curKlineTime, lastKlineTime + 180 > curKlineTime)
             if (lastKlineTime + 60 > curKlineTime):
-                # symbolState = [
-                #     symbol, lastKlineTime, curKlineTime,
-                #     lastKlineTime + 60 > curKlineTime
-                # ]
+
                 if symbol not in g_last_kline_list:
                     g_last_kline_list[symbol] = {
                         "count": 1,
