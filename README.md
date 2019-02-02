@@ -15,7 +15,10 @@ author:
 cd <dir>
 scrapy startproject <scrapyTestProject>
 scrapy genspider spider_baidu image.baidu.com
+
+cd scrapyTest/scrapyTest
 scrapy crawl spider_baidu --nolog
+
 
 setting: ROBOTSTXT_OBEY = False (spider baidu.com)
 

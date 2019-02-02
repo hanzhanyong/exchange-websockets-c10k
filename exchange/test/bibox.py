@@ -22,8 +22,8 @@ if __name__ == '__main__':
     print('connect is started.')
 
     # 订阅 KLine 数据
-    tradeStr = '{"event": "addChannel", "channel": "bibox_sub_spot_ETC_USDT_kline_1min"}'
-    ws.send(tradeStr)
+    # tradeStr = '{"event": "addChannel", "channel": "bibox_sub_spot_ETC_USDT_kline_1min"}'
+    # ws.send(tradeStr)
 
     tradeStr = '{"event": "addChannel", "channel": "bibox_sub_spot_BTC_USDT_kline_1min"}'
     ws.send(tradeStr)
