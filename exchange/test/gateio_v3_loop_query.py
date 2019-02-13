@@ -9,8 +9,6 @@ import sys
 # API URL
 # https://gateio.io/docs/futures/ws/index.html#candlesticks-subscription
 
-def 
-
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('USE: python gateio.py [usd|eth]')
@@ -41,7 +39,7 @@ if __name__ == '__main__':
     sub_data_list = [
         json.dumps({
             "id":
-            int(time.time()),
+            int(time.time() * 1000),
             "method":
             "kline.query",
             "params":
@@ -53,6 +51,11 @@ if __name__ == '__main__':
 
     print("sub_data_list", len(sub_data_list))
     #     ws.send(sub)
+
+    data_list_len = len(sub_data_list)
+    if data_list_len > 30:
+        data_list_len = 30
+
     sendIndex = 0
     startTime = time.time()
     ws.send(sub_data_list[sendIndex])
@@ -61,11 +64,12 @@ if __name__ == '__main__':
     while True:
         res = ws.recv()
         resJson = json.loads(res)
-        # print(resJson)
+        if 'ETH_USDT' in res:
+            print(resJson)
 
         sendIndex += 1
 
-        if sendIndex >= 50:  # len(sub_data_list):
+        if sendIndex >= data_list_len:
             sendIndex = 0
             endTime = time.time()
             print("end-start={}".format(endTime - startTime))

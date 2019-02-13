@@ -9,7 +9,8 @@ if __name__ == '__main__':
     while True:
         try:
             ws = create_connection(
-                "wss://kline.exx.com/websocket",
+                "wss://ws.exx.com/websocket",
+                # "wss://kline.exx.com/websocket",
                 http_proxy_host="127.0.0.1",
                 http_proxy_port=1087)
             break
@@ -19,12 +20,13 @@ if __name__ == '__main__':
 
     print('connect is started.')
 
-    # 订阅  Market KLine 数据
-    tradeStr = '{"dataType":"1_KLINE_30M_ETH_HSR","dataSize":1,"action":"ADD"}'
-    tradeStr = '{event: "addChannel", channel: "ethusdt_cny_depth", isZip: false, binary: false}'
+    # 订阅  Market KLine 数据 1_KLINE_1M_GXS_USDT
+    tradeStr = '{"dataType":"1_KLINE_1M_1ST_BTC","dataSize":1,"action":"ADD"}'
+    # tradeStr = '{event: "addChannel", channel: "ethusdt_cny_depth", isZip: false, binary: false}'
 
-    ws.send(tradeStr)
+    # ws.send(tradeStr)
     while (True):
+        ws.send(tradeStr)
         compressData = ws.recv()
         print(compressData)
         # res = gzip.decompress(compressData).decode('utf-8')
