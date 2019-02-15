@@ -10,7 +10,11 @@ import json
 # import time
 import hashlib
 
-from installClass import installClass
+# import multiprocessing
+from multiprocessing import Process
+import exchange
+
+# from installClass import installClass
 
 PROXY = "http://127.0.0.1:1087"
 URL = "wss://api.huobi.pro/ws"
@@ -222,15 +226,106 @@ def main_huobipro():
     loop.close()
 
 
+async def connectWs(session, ex, sub_data, proxy):
+    try:
+        async with session.ws_connect(
+                ex.wsUrl, autoclose=True, autoping=True, proxy=proxy) as ws:
+            try:
+                # dispatch
+                await dispatch(sub_data, ws)
+                await ws.close()
+            # 其他错误
+            except Exception as e:
+                print(f'{ex.name}: recev error: {e}')
+                await ws.close(ws)
+                return
+    except Exception as e:
+        print(f'{ex.name} 参数:{sub_data} 处理ws 信息其他错误: {e}')
+        await ws.close(ws)
+        return
+
+def processStart(exchangeList=[]):
+    loop = asyncio.get_event_loop()
+    conn = aiohttp.TCPConnector(limit=0)  # default 100
+    session = aiohttp.ClientSession(connector=conn)
+
+    tasks = []
+    for exName in exchangeList:
+        ex = getattr(exchange, exName)()
+        sub_data = []
+        tasks.append(connectWs(session, ex, sub_data, PROXY))
+
+    tasks = [
+        connectWs(session, URL, sub_data, PROXY) for sub_data in kline_subs
+    ]
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.run_forever()
+
+
+def mainStart(exchangeList=[]):
+    # LOCAL_PROCESS_NUM = multiprocessing.cpu_count()
+    # exchangeList = ["huobipro", "okex", "binance"]
+
+    # p = Process(target=process_start,args=(url_list,))
+    # p.start()
+
+    process_start(exchangeList)
+    # print("mainStart", exchangeList)
+
+
+def mainInstall(exchangeList=[]):
+    print("mainInstall", exchangeList)
+
+
+def mainUnInstall(exchangeList=[]):
+    print("mainUnInstall", exchangeList)
+
+
+def mainStatics(exchangeList=[]):
+    print("mainStatics", exchangeList)
+
+def Usage():
+    print('Usage:\n\
+        python main.py [dev|prod|local] [install|uninstall|start|statics] [all|huobipro|okex|binance] \n\n\
+    i.e python main.py local start all\n')
+
 if __name__ == '__main__':
     # main_huobipro()
     # install uninstall run statics
     if len(sys.argv) < 4:
-        print('Usage:\n\
-        python main [dev|prod|local] [install|uninstall|run|statics] [all|huobipro|okex|binance] \n\n\
-    i.e python main local run all\n')
+        Usage()
         exit(0)
     
-    myinstall = installClass()
-    myinstall.logger()
-    print(sys.argv)
+    cmdName = sys.argv[2]
+    exchangeName = sys.argv[3]
+
+    exchangeList = []
+    if exchangeName == "all":
+        exchangeList = ["huobipro", "okex", "binance"]
+    else:
+        exchangeList = exchangeName.split("|")
+
+    # check exchange is true
+    for exchageName in exchangeList:
+        try:
+            ex = getattr(exchange, exchageName)()
+            print(f"{exchageName} is OK!")
+        except Exception as ex:
+            print(ex)
+            exit(0)
+    
+    if cmdName == "install":
+        mainInstall(exchangeList)
+    elif cmdName == "uninstall":
+        mainUnInstall(exchangeList)
+    elif cmdName == "start":
+        mainStart(exchangeList)
+    elif cmdName == "statics":
+        mainStatics(exchangeList)
+    else:
+        print(f"{cmdName} command is not exists!")
+        Usage()
+
+    # myinstall = installClass()
+    # myinstall.logger()
+    # print(sys.argv)

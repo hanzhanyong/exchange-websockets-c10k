@@ -1,12 +1,20 @@
 # exchange-websockets-c10k
-test websockets of exchange(i.e    huobipro  binance  okex),     asyncio and aiohttp
+    test websockets of exchange(i.e    huobipro  binance  okex)
+    subscribe data: ticker + kline(1min) + depth + trade
 
-data: ticker + kline(1min) + depth + trade
+# author
+    email: 306679711@qq.com
+    weixi: h13426492793
 
-framework: multithread + websockets + asyncio + redis + rabbitmq
+# technology stack
+    threading
+    websockets
+    asyncio
+    aiohttp
+    aioredis 
+    aiorabbitmq
 
-author: 
-    hzy(306679711@qq.com)
+
 
 
 ## Scrapy Install & Test
