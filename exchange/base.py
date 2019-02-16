@@ -1,4 +1,17 @@
+from enum import Enum, unique
+
 idIndex = 1  # exchange id index
+
+
+@unique
+class wsSubscribeType(Enum):
+    '''
+    websocket type 
+    '''
+    WS_TICKERS = 1
+    WS_KLINE = 2
+    WS_TRADE = 3
+    WS_DEPTH = 4
 
 
 class wsBase:
@@ -20,52 +33,62 @@ class wsBase:
         self.wsUrl = ""  # websocket url
         self.subData = None  # websocket subscribe data
 
+        self.session = None
         self.wsConn = None
+        self.wsSubscribeType = wsSubscribeType.WS_TICKERS
 
     # def getConnection(self):
     #     return self.wsConn
+    async def connect(self, proxy):
+        self.wsConn = await self.session.ws_connect(
+            self.wsUrl, autoclose=True, autoping=True, proxy=proxy)
+        return self.wsConn
 
-    def connect(self, ws, subData=[]):
-        self.wsConn = ws
-        self.subData = subData
+    async def subscribe(self):
+        # msg = None
+        # if self.wsSubscribeType is wsSubscribeType.WS_TICKERS:
+        # await self.send(msg)
+        pass
 
-        if isinstance(self.subData, list):
-            for sub in self.subData:
-                self.wsConn.send(sub)
-        elif isinstance(self.subData, str):
-            self.conn.send(self.subData)
+    async def send(self, msg):
+        if isinstance(msg, str):
+            await self.wsConn.send_str(msg)
+        elif isinstance(msg, dict):
+            await self.wsConn.send_json(msg)
         else:
-            print(f"{self.name}_{self.id}  subdata error")
+            await self.wsConn.send(msg)
 
-    def recv(self):
+    async def close(self):
+        await self.wsConn.close()
+
+    async def recv(self):
+        return await self.wsConn.recv()
+
+    async def sendPing(self):
+        pass
+
+    '''
+    parse data
+    '''
+
+    def parse(self, data):
         """
             parse data (kline tickers depth  trade)
         """
-        return self.wsConn.recv()
-
-    def send(self, msg):
-        self.wsConn.send(msg)
-
-    def sendPing(self, msg=None):
-        if not msg:
-            msg = ""  # default ping pong
-        self.conn.wsConn.send(msg)
-
-    # def parse(self, data):
-    #     return data
+        pass
 
     # parse tikers
-    def parseTickers(self, tikers):
+    async def parseTickers(self, tikers):
         return tikers
 
     # parse Kline
-    def parseKline(self, kline):
+    async def parseKline(self, kline):
         return kline
 
     # parse Depth
-    def parseDepth(self, depth):
+    async def parseDepth(self, depth):
         return depth
 
     # parse Trade
-    def parseTrade(self, trade):
+    async def parseTrade(self, trade):
         return trade
