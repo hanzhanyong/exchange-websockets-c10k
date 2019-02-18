@@ -19,23 +19,27 @@ if __name__ == '__main__':
     print('connect is started.')
 
     # 订阅 KLine 数据
-    tradeStr = '42["join-room", "candlestick_eth_btc"]'
+    tradeStr = '42["join-room", "candlestick_btc_jpy"]'
+    # tradeStr = '42["join-room", "ticker_btc_jpy"]'
+    ws.send(tradeStr)
+    ping = "2"
+    timeStamp = time.time()
+    timeStampStart = timeStamp
+    try:
+        while (True):
+            res = ws.recv()
+            print(type(res), res)
+            # print(res[0:2] == "40")
+            # if res[0:2] == "40":
+            #     print(res[0:2] == "40")
+            #     ws.send(tradeStr)
 
-    while (True):
-        res = ws.recv()
-        print(type(res), res)
-        # print(res[0:2] == "40")
-        if res[0:2] == "40":
-            print(res[0:2] == "40")
-            ws.send(tradeStr)
-
-        # ws.send('2')
-        # res = gzip.decompress(compressData).decode('utf-8')
-
-        # print(res)
-
-        # if res[:7] == '{"ping"':
-        #     ts = res[8:21]
-        #     pong = '{"pong":' + ts + '}'
-        #     ws.send(pong)
-#
+            timeStampEnd = time.time()
+            # print("timeStampEnd - timeStamp", timeStampEnd - timeStamp)
+            if timeStampEnd - timeStamp > 30:
+                timeStamp = timeStampEnd
+                print("ping", ping)
+                ws.send(ping)
+    except Exception as ex:
+        print(ex)
+    print("end-start=", timeStampEnd - timeStampStart)
